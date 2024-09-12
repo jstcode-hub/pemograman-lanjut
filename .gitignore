@@ -1,0 +1,5 @@
+# Abaikan semua file .exe
+*.exe
+
+# Abaikan folder .vscode
+.vscode/
