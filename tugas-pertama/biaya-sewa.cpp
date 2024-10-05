@@ -6,7 +6,7 @@ using namespace std;
 
 // Fungsi untuk hitung biaya sewa kendaraan
 int hitungBiayaSewaKendaraan(int jumlah_hari, int harga_sewa_per_hari) {
-    return jumlah_hari * harga_sewa_per_hari; // Sederhanakan dengan perhitungan langsung
+    return jumlah_hari * harga_sewa_per_hari;
 }
 
 int main(){
