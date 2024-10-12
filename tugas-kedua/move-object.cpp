@@ -1,63 +1,67 @@
 #include <iostream>
-#include <thread>
-#include <chrono>
+#include <thread>   // Untuk delay menggunakan sleep_for
+#include <chrono>   // Untuk mengatur durasi delay
+#include <vector>   // Untuk penggunaan vector
 
 using namespace std;
 
-// Fungsi untuk mencetak matriks ke layar
-void printMatrix(char matrix[3][5]) {
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            cout << matrix[i][j] << ' ';
+void printMatrix(const vector<vector<char>>& matrix) {
+    for (const auto& row : matrix) {
+        for (char elem : row) {
+            cout << elem << " ";
         }
         cout << endl;
     }
     cout << endl;
 }
 
-// Fungsi untuk memindahkan objek 'x' satu persatu dari kiri ke kanan
-void moveObjects(char matrix[3][5]) {
-    int rows = 3;
-    int cols = 5;
+void moveColumnDown(vector<vector<char>>& matrix, int col) {
+    int size = matrix.size();
+    // Memindahkan setiap elemen di kolom `col` ke bawah
+    for (int i = size - 1; i > 0; i--) {
+        matrix[i][col] = matrix[i - 1][col];
+    }
+    // Mengosongkan elemen paling atas di kolom tersebut
+    matrix[0][col] = ' ';
+}
 
-    // Looping untuk setiap baris
-    for (int row = 0; row < rows; ++row) {
-        // Looping untuk setiap kolom di baris tersebut
-        for (int col = 0; col < cols; ++col) {
-            // Jika tidak di kolom pertama, hapus 'x' di kolom sebelumnya
-            if (col > 0) {
-                matrix[row][col - 1] = ' ';
-            }
-
-            // Pindahkan objek 'x' ke kolom saat ini
-            matrix[row][col] = 'x';
-
-            // Cetak matriks untuk melihat pergerakan
-            printMatrix(matrix);
-
-            // Delay untuk visualisasi gerakan
-            this_thread::sleep_for(chrono::milliseconds(500));
+void initializeMatrix(vector<vector<char>>& matrix, char fillChar) {
+    int size = matrix.size();
+    // Menginisialisasi matriks dengan karakter yang diinginkan
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            matrix[i][j] = fillChar;
         }
-
-        // Setelah objek di satu baris sudah selesai bergerak, hapus 'x' di kolom terakhir
-        matrix[row][cols - 1] = ' ';
     }
 }
 
 int main() {
-    // Inisialisasi matriks 3x5 dengan objek 'x'
-    char matrix[3][5] = {
-        {'x', 'x', 'x', 'x', 'x'},
-        {'x', 'x', 'x', 'x', 'x'},
-        {'x', 'x', 'x', 'x', 'x'}
-    };
+    int size;
+    
+    // Meminta input ukuran matriks dari pengguna
+    cout << "Masukkan ukuran matriks: ";
+    cin >> size;
 
-    // Cetak matriks awal
-    cout << "Initial Matrix:\n";
+    // Membuat matriks menggunakan vector 2D
+    vector<vector<char>> matrix(size, vector<char>(size));
+
+    // Inisialisasi matriks dengan karakter 'x'
+    initializeMatrix(matrix, 'x');
+
+    cout << "Matriks Awal:" << endl;
     printMatrix(matrix);
 
-    // Panggil fungsi untuk memindahkan objek 'x' satu persatu
-    moveObjects(matrix);
+    // Memindahkan objek di setiap kolom ke bawah secara bertahap
+    for (int col = 0; col < size; col++) {
+        for (int step = 0; step < size; step++) {
+            moveColumnDown(matrix, col);
+            cout << "Setelah memindahkan kolom " << col + 1 << " langkah ke-" << step + 1 << ":" << endl;
+            printMatrix(matrix);
+
+            // Menambahkan delay selama 500 milidetik
+            this_thread::sleep_for(chrono::milliseconds(500));
+        }
+    }
 
     return 0;
 }
